@@ -1,0 +1,11 @@
+{
+    "require": {
+        "php-ffmpeg/php-ffmpeg": ">=1.2"
+    },
+    
+    "autoload": {
+        "classmap": ["includes/"]
+    }
+    
+}
+
