@@ -8,6 +8,8 @@ use GuzzleHttp\Exception\ConnectException;
 
 require_once __DIR__ . "/../vendor/autoload.php";
 
+switch_to_blog(1);
+
 function get_duration_diff_string($datetime)
 {
     $timearr = [];
@@ -25,6 +27,7 @@ function get_duration_diff_string($datetime)
 
 function print_box_card_content($box, $handshakes, $location = null)
 {
+    switch_to_blog(1);
     $formatter = new IntlDateFormatter('de_DE', IntlDateFormatter::FULL, IntlDateFormatter::FULL, new DateTimeZone("Europe/Berlin"));
     $formatter->setPattern('E, dd.MM.Y HH:mm');
     $assignments = new Box_Assignments();
@@ -147,7 +150,7 @@ try {
     <?php do_action('admin_notices') ?>
     <div class="fotobox-table">
         <?php
-        $locations = get_terms([
+        $locations = get_terms_from_main([
             "taxonomy" => 'location',
             'hide_empty' => false,
             'meta_key' => 'location_type',
@@ -161,15 +164,15 @@ try {
                 <h1><a href="<?= get_edit_term_link($location) ?>"><?= $location->name ?></a></h1>
                 <?php if (!empty($box_assigned = get_term_meta($location->term_id, "assigned_box", true))) {
                     $assigned_boxes[] = $box_assigned;
-                    print_box_card_content(get_term_by("name", $box_assigned, "fotobox"), $handshakes, $location);
+                    print_box_card_content(get_term_by_from_main("name", $box_assigned, "fotobox"), $handshakes, $location);
                 } else {
-                    print_box_card_content(get_term_by("name", null, "fotobox"), $handshakes, $location);
+                    print_box_card_content(get_term_by_from_main("name", null, "fotobox"), $handshakes, $location);
                 } ?>
             </div>
             <?php
         }
 
-        $boxen = get_terms([
+        $boxen = get_terms_from_main([
             "taxonomy" => 'fotobox',
             'hide_empty' => false,
             //'meta_key' => 'location_type',

@@ -20,7 +20,7 @@ class Box_Assignments
             return null;
         }
         foreach ($assignments as $ass) {
-            $terms = wp_get_post_terms($ass->event_id, "eventtype");
+            $terms = wp_get_post_terms_from_blog($ass->event_id, "eventtype",$ass->blog_id);
             $term_names = array_map(fn ($x) => $x->name, $terms);
             if (!in_array("Demo", $term_names)) {
                 return $ass;

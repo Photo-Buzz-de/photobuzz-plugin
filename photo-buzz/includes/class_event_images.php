@@ -125,7 +125,8 @@ class Event_Images
 					'path' => get_home_path() . self::img_dir . "/" . $this->directory . '/' . $result['name'],
 					'date' => new JsonDateTime("@" . $result['date']),
 					'width' => $result['width'],
-					'height' => $result['height']
+					'height' => $result['height'],
+					'code' => $result['random_key']
 				);
 			}
 
@@ -183,7 +184,7 @@ class Event_Images
 			$strparts = explode("_", $results[0]["name"], 5);
 			$out = array();
 			$out["box_id"] = $strparts[1];
-			$out["date"] = DateTime::createFromFormat("U", $results[0]["date"]);
+			$out["date"] = \DateTime::createFromFormat("U", $results[0]["date"]);
 			return $out;
 		} else return NULL;
 	}

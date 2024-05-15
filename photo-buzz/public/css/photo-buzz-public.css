@@ -1,0 +1,67 @@
+/**
+ * All of the CSS for your public-facing functionality should be
+ * included in this file.
+ */
+
+
+
+
+
+.masonry-grid .masonry-grid-item,
+.masonry-grid .grid-sizer {
+
+    width: 48.75%;
+
+    /*
+    @include breakpoint(medium) {
+        width: 32.3333333%;
+    }
+
+    @include breakpoint(large) {
+        width: 23.882681575;
+    }
+
+    @include breakpoint(xlarge) {
+        width: 18.80819368%;
+    }*/
+
+    break-inside: avoid;
+    margin-bottom: 1rem;
+    line-height: 0;
+    float: left;
+
+
+}
+
+.masonry-grid .masonry-grid-item img,
+.masonry-grid .grid-sizer img,
+.masonry-grid .masonry-grid-item video,
+.masonry-grid .grid-sizer video {
+    display: block;
+    position: absolute;
+    top: 0;
+}
+
+.masonry-grid .masonry-grid-item a,
+.masonry-grid .grid-sizer a {
+    width: 100%;
+    display: block;
+}
+
+.masonry-grid .gutter-sizer {
+
+    width: 2.5%;
+    /*
+
+    @include breakpoint(medium) {
+        width: 1.5%;
+    }
+
+    @include breakpoint(large) {
+        width: 1.4897579%;
+    }*/
+}
+
+.masonry-grid {
+    width: 100%;
+}

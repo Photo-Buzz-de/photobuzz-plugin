@@ -20,7 +20,8 @@
  * @subpackage Photo_Buzz/public
  * @author     Your Name <email@example.com>
  */
-class Photo_Buzz_Public {
+class Photo_Buzz_Public
+{
 
 	/**
 	 * The ID of this plugin.
@@ -47,11 +48,11 @@ class Photo_Buzz_Public {
 	 * @param      string    $photo_buzz       The name of the plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $photo_buzz, $version ) {
+	public function __construct($photo_buzz, $version)
+	{
 
 		$this->photo_buzz = $photo_buzz;
 		$this->version = $version;
-
 	}
 
 	/**
@@ -59,7 +60,8 @@ class Photo_Buzz_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_styles() {
+	public function enqueue_styles()
+	{
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -73,7 +75,9 @@ class Photo_Buzz_Public {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->photo_buzz, plugin_dir_url( __FILE__ ) . 'css/photo-buzz-public.css', array(), $this->version, 'all' );
+		wp_enqueue_style($this->photo_buzz, plugin_dir_url(__FILE__) . 'css/photo-buzz-public.css', array(), $this->version."xy", 'all');
+		wp_enqueue_style("photoswipe", plugin_dir_url(__FILE__) . 'css/photoswipe.css', array(), $this->version, 'all');
+		wp_enqueue_style("photoswipe-default-skin", plugin_dir_url(__FILE__) . 'css/default-skin/default-skin.css', array(), $this->version, 'all');
 
 	}
 
@@ -82,7 +86,8 @@ class Photo_Buzz_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_scripts() {
+	public function enqueue_scripts()
+	{
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -96,8 +101,9 @@ class Photo_Buzz_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->photo_buzz, plugin_dir_url( __FILE__ ) . 'js/photo-buzz-public.js', array( 'jquery' ), $this->version, false );
-
+		wp_enqueue_script($this->photo_buzz, plugin_dir_url(__FILE__) . 'js/photo-buzz-public.js', array('jquery'), $this->version, false);
+		wp_enqueue_script('jquery-masonry');
+		wp_enqueue_script('photoswipe', plugin_dir_url(__FILE__)  . '/js/photoswipe.min.js', array(), null, true);
+		wp_enqueue_script('photoswipe-ui', plugin_dir_url(__FILE__)  . '/js/photoswipe-ui-default.min.js', array('photoswipe'), null, true);
 	}
-
 }

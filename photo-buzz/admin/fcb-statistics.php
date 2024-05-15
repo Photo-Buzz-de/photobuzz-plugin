@@ -1,7 +1,7 @@
 <?php
-namespace PhotoBuzz;
 require_once __DIR__ . "/../vendor/autoload.php";
 
+use PhotoBuzz\Statistics;
 
 if (!function_exists("is_admin") || !is_admin()) die("Not admin!");
 ?>

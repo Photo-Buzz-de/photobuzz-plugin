@@ -159,12 +159,13 @@ class Photo_Buzz
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
 
+
 		// FOTOBOX ZUORDNUNG ADMIN
 		$this->loader->add_action(
 			'admin_menu',
 			$plugin_admin,
 			function () {
-				if (is_main()) {
+				if (!is_fcb()) {
 					add_menu_page(
 						"Fotobox Verwaltung",
 						"Fotoboxen",
@@ -177,24 +178,24 @@ class Photo_Buzz
 						9
 					);
 					add_submenu_page("photobuzz-stats", "Übersicht", "Übersicht", "edit_pages", "photobuzz-stats", function () {
-						require_once(plugin_dir_path(__FILE__) ."../admin/photobuzz-stats.php");
+						require_once(plugin_dir_path(__FILE__) . "../admin/photobuzz-stats.php");
 					});
 					add_submenu_page("photobuzz-stats", "Locations", "Locations", "edit_pages", "edit-tags.php?taxonomy=location&post_type=event");
 					add_submenu_page("photobuzz-stats", "Boxen", "Boxen", "edit_pages", "edit-tags.php?taxonomy=fotobox&post_type=event");
 					add_submenu_page("photobuzz-stats", "Alle Zuordnungen", "Alle Zuordnungen", "edit_pages", "photobuzz-manage-menu", function () {
-						require_once(plugin_dir_path(__FILE__) ."../admin/photobuzz-manage-page.php");
+						require_once(plugin_dir_path(__FILE__) . "../admin/photobuzz-manage-page.php");
 					});
 					add_submenu_page("photobuzz-stats", "Neue Zuordnung", "Neue Zuordnung", "edit_pages", "photobuzz-new-assignment", function () {
-						require_once(plugin_dir_path(__FILE__) ."../admin/photobuzz-new-assignment.php");
+						require_once(plugin_dir_path(__FILE__) . "../admin/photobuzz-new-assignment.php");
 					});
-				} else if (is_fcb()) {
+				} else {
 					add_menu_page(
 						"Fanfoto-Statistik",
 						"Fanfoto-Statistik",
 						"edit_pages",
 						"fcb-statistics-menu",
 						function () {
-							require_once(plugin_dir_path(__FILE__) ."../admin/fcb-statistics.php");
+							require_once(plugin_dir_path(__FILE__) . "../admin/fcb-statistics.php");
 						},
 						"dashicons-chart-line",
 						9
@@ -219,6 +220,11 @@ class Photo_Buzz
 
 			wp_die(); // this is required to terminate immediately and return a proper response
 		}
+
+		require_once "metabox_admin.php";
+		foreach ($admin_metabox_functions as $metabox) {
+			$this->loader->add_action($metabox[0], $plugin_admin, $metabox[1], $metabox[2], $metabox[3]);
+		}
 	}
 
 	/**
@@ -235,6 +241,185 @@ class Photo_Buzz
 
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
+
+		$this->loader->add_action('init', $plugin_public, function () { 	//Post Type
+			$labels = array(
+				'name'               => _x('Events', 'post type general name'),
+				'singular_name'      => _x('Event', 'post type singular name'),
+				'add_new'            => _x('Erstellen', 'book'),
+				'add_new_item'       => __('Neues Event hinzufügen'),
+				'edit_item'          => __('Event bearbeiten'),
+				'new_item'           => __('Neues Event'),
+				'all_items'          => __('Alle Events'),
+				'view_item'          => __('Event ansehen'),
+				'search_items'       => __('Events durchsuchen'),
+				'not_found'          => __('Keine Events gefunden'),
+				'not_found_in_trash' => __('Keine Events im Papierkorb gefunden'),
+				'parent_item_colon'  => '',
+				'menu_name'          => 'Events'
+			);
+			$args   = array(
+				'labels'        => $labels,
+				'description'   => 'Ein Event.',
+				'public'        => true,
+				'menu_position' => 5,
+				'supports'      => array('title'), //comments
+				'has_archive'   => true,
+				//'taxonomies' 	=> array('category'),
+				'show_in_rest'  => true,
+				'menu_icon'     => 'dashicons-tickets-alt',
+
+			);
+			register_post_type('event', $args);
+
+			//Post Type
+			$labels = array(
+				'name'               => _x('Gewinnspiele', 'post type general name'),
+				'singular_name'      => _x('Gewinnspiel', 'post type singular name'),
+				'add_new'            => _x('Erstellen', 'book'),
+				'add_new_item'       => __('Neues Gewinnspiel hinzufügen'),
+				'edit_item'          => __('Gewinnspiel bearbeiten'),
+				'new_item'           => __('Neues Gewinnspiel'),
+				'all_items'          => __('Alle Gewinnspiele'),
+				'view_item'          => __('Gewinnspiel ansehen'),
+				'search_items'       => __('Gewinnspiele durchsuchen'),
+				'not_found'          => __('Keine Gewinnspiele gefunden'),
+				'not_found_in_trash' => __('Keine Gewinnspiele im Papierkorb gefunden'),
+				'parent_item_colon'  => '',
+				'menu_name'          => 'Gewinnspiele'
+			);
+			$args   = array(
+				'labels'        => $labels,
+				'description'   => 'Ein Gewinnspiel.',
+				'public'        => true,
+				'menu_position' => 20,
+				'supports'      => array('title', "editor"), //comments
+				'has_archive'   => true,
+				//'taxonomies' 	=> array('category'),
+				'show_in_rest'  => true,
+				'menu_icon'     => 'dashicons-awards',
+
+			);
+
+			register_post_type('raffle', $args);
+
+
+			// create a new taxonomy
+			$labels = array(
+				'name'          => _x('Eventtypen', 'taxonomy general name', 'textdomain'),
+				'singular_name' => _x('Eventtyp', 'taxonomy singular name', 'textdomain'),
+				'search_items'  => __('Eventtypen durchsuchen', 'textdomain'),
+				'all_items'     => __('Alle Eventtypen', 'textdomain'),
+				'edit_item'     => __('Eventtyp Bearbeiten', 'textdomain'),
+				'update_item'   => __('Eventtyp aktualisieren', 'textdomain'),
+				'add_new_item'  => __('Neuen Eventtyp hinzfügen', 'textdomain'),
+				'new_item_name' => __('Name des neuen Eventtyp', 'textdomain'),
+				'menu_name'     => __('Eventtypen', 'textdomain'),
+			);
+			register_taxonomy(
+				'eventtype',
+				'event',
+				array(
+					'label'   => __('Eventtyp'),
+					'labels'  => $labels,
+					'rewrite' => array('slug' => 'eventtype'),
+					'default_term' => get_current_blog_id() == 1 ? array(array()) : array(),
+
+				)
+			);
+		});
+
+
+
+		$this->loader->add_filter("single_template", $plugin_public, function ($template, $type, $templates) {
+			if (in_array("single-event.php", $templates)) {
+				return realpath(plugin_dir_path(__FILE__) . "/../public/single-event.php");
+			}
+		}, 10, 4);
+
+		$this->loader->add_action('wp_ajax_delete_image', $plugin_public, function () {
+			error_log("DELETE");
+			$dir = $_POST["dir"];
+			$name = $_POST["name"];
+			if (can_delete_image($_POST["event"])) {
+				$imgs = new PhotoBuzz\Event_Images($dir);
+				$imgs->deleteImage($name);
+				echo "Success";
+			} else {
+				echo "Not authorized";
+			}
+			wp_die();
+		});
+
+		$this->loader->add_action('pre_get_posts', $plugin_public, function ($qry) {
+			if ($qry->is_main_query() && !is_admin() && is_post_type_archive('event') && isset($_GET['has_password'])) {
+				$has_password = urldecode($_GET['has_password']) === "true";
+				$qry->set('has_password', $has_password);
+			}
+		});
+
+		$this->loader->add_action('template_include', $plugin_public, function ($template) {
+			global $wp_query;
+			// our query
+			if (isset($wp_query->query['p']) && !$wp_query->is_404) {
+				$template = get_query_template("single", array("single-event.php"));
+			}
+			if (get_query_var('calendar')) {
+				$template = locate_template(['calendar.php']);
+			}
+
+			return $template;
+		});
+
+		$this->loader->add_action('pre_get_posts', $plugin_public, function () {
+			global $wp_query;
+			if (isset($wp_query->query['p'])) {
+				
+
+				$imgdetail = PhotoBuzz\Event_Images::getImageDetailsByCode($wp_query->query['p']);
+				if (!empty($imgdetail)) {
+					$assignments = new PhotoBuzz\Box_Assignments();
+					$ass = $assignments->get_assignments($imgdetail["box_id"], NULL, $imgdetail["date"]);
+
+					$wp_query->set("p", $ass[0]->event_id);
+					$wp_query->set("post_type", "any");
+					$wp_query->is_singular = true;
+					//$wp_query->set("error", "");
+					set_query_var("image-code", $wp_query->query['p']);
+
+					//Workaround für seltenen FCB Fehler
+					$wp_query->set("error", "");
+					$wp_query->is_404 = false;
+
+					if (empty($wp_query->query['p'])) {
+						$wp_query->is_404 = true;
+					}
+					
+				} else {
+					$wp_query->is_404 = true;
+				}
+			}
+		});
+		// Rewrite event link
+
+		$this->loader->add_action('init', $plugin_public,  function () {
+			add_rewrite_rule('event/([a-z0-9-]+)/([\w-]+)[/]?$', 'index.php?event=$matches[1]&image-code=$matches[2]', 'top');
+			add_rewrite_endpoint("p", EP_ROOT);
+			add_rewrite_endpoint("calendar", EP_ROOT);
+			if (is_fcb()) {
+				add_rewrite_endpoint("teilnahmebedingungen", EP_PERMALINK);
+			}
+		});
+
+		$this->loader->add_filter('query_vars', $plugin_public, function ($query_vars) {
+			$query_vars[] = 'image-code';
+			return $query_vars;
+		});
+		$this->loader->add_filter('request', $plugin_public,  function ($vars) {
+			if (isset($vars['teilnahmebedingungen'])) $vars['teilnahmebedingungen'] = true;
+			if (isset($vars['calendar'])) $vars['calendar'] = $vars['calendar'];
+			return $vars;
+		});
 	}
 
 	/**

@@ -121,7 +121,11 @@ class Photo_Buzz_Loader
 	{
 
 		foreach ($this->filters as $hook) {
-			add_filter($hook['hook'], array($hook['component'], $hook['callback']), $hook['priority'], $hook['accepted_args']);
+			if ($hook['callback'] instanceof \Closure) {
+				add_filter($hook['hook'],  $hook['callback'], $hook['priority'], $hook['accepted_args']);
+			} else {
+				add_filter($hook['hook'], array($hook['component'], $hook['callback']), $hook['priority'], $hook['accepted_args']);
+			}
 		}
 
 		foreach ($this->actions as $hook) {

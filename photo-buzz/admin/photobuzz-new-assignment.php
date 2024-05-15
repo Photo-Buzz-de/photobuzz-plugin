@@ -2,7 +2,7 @@
     <?php
     require_once __DIR__ . "/../vendor/autoload.php";
 
-    use Includes\Box_Assignments;
+    use PhotoBuzz\Box_Assignments;
 
     $assignments = new Box_Assignments();
 
