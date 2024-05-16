@@ -65,3 +65,7 @@
 .masonry-grid {
     width: 100%;
 }
+
+.uicore-content .pswp-thumb img {
+    max-width: 100%;
+}

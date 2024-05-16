@@ -133,6 +133,11 @@ function get_assignments()
 	return new PhotoBuzz\Box_Assignments();
 }
 
+function get_event_images($dir)
+{
+	return new PhotoBuzz\Event_Images($dir);
+}
+
 
 function get_terms_from_main($args = array())
 {

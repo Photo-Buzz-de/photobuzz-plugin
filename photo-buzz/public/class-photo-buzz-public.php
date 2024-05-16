@@ -75,7 +75,7 @@ class Photo_Buzz_Public
 		 * class.
 		 */
 
-		wp_enqueue_style($this->photo_buzz, plugin_dir_url(__FILE__) . 'css/photo-buzz-public.css', array(), $this->version."xy", 'all');
+		//wp_enqueue_style($this->photo_buzz, plugin_dir_url(__FILE__) . 'css/photo-buzz-public.css', array(), $this->version."zzsz", 'all');
 		wp_enqueue_style("photoswipe", plugin_dir_url(__FILE__) . 'css/photoswipe.css', array(), $this->version, 'all');
 		wp_enqueue_style("photoswipe-default-skin", plugin_dir_url(__FILE__) . 'css/default-skin/default-skin.css', array(), $this->version, 'all');
 

@@ -109,7 +109,7 @@ if (isset($_GET['json'])) {
         echo '<div class="small-12 column text-center callout alert">' . __("Diese Galerie ist leider leer!", "textdomain") . '</div>';
       } else if ($terms && (in_array("public", $terms) || in_array("photoset", $terms)) && !can_delete_image(get_the_ID())) {
         echo "<h4>Nutze deinen QR-Code, um dein Foto aufzurufen</h4>";
-      } else if (in_array("photoset", $terms)) {
+      } else if ($terms && in_array("photoset", $terms)) {
 
         $images = new PhotoBuzz\Event_Images(get_post_meta(get_the_ID(), 'directory', true));
         if (isset($_GET['scan'])) {

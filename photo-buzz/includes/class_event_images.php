@@ -67,10 +67,10 @@ class Event_Images
 				$editor->resize(300, null);
 				$editor->save($fullthumbpath);
 			} else {
-				$ffmpeg = FFMpeg\FFMpeg::create();
+				$ffmpeg = \FFMpeg\FFMpeg::create();
 				$video = $ffmpeg->open(get_home_path() . "/" . self::img_dir . "/" . $this->directory . "/" . $img);
-				$video->filters()->resize(new FFMpeg\Coordinate\Dimension(300, 450));
-				$format = new FFMpeg\Format\Video\X264();
+				$video->filters()->resize(new \FFMpeg\Coordinate\Dimension(300, 450));
+				$format = new \FFMpeg\Format\Video\X264();
 				$format->setKiloBitrate(100);
 				$video->save($format, $fullthumbpath);
 			}
@@ -91,7 +91,7 @@ class Event_Images
 					} else if (substr($img, 0, 2) == "PB") {
 						try {
 							$this->insertImage2("", $img, true);
-						} catch (InvalidArgumentException $e) {
+						} catch (\InvalidArgumentException $e) {
 							error_log("scan: Datei existiert");
 						}
 					}
@@ -177,7 +177,7 @@ class Event_Images
 			require_once(dirname(__FILE__) . '/../../../../wp-admin/includes/file.php');
 		}
 
-		$query = $wpdb->prepare('SELECT * FROM wp_photobuzz_event_images WHERE random_key="%s" ORDER BY date DESC LIMIT 2',  $code);
+		$query = $wpdb->prepare('SELECT * FROM wp_photobuzz_event_images WHERE random_key="%s" ORDER BY date ASC LIMIT 2',  $code);
 		$results = $wpdb->get_results($query, ARRAY_A);
 
 		if ($results && !empty($results)) {
@@ -247,10 +247,10 @@ class Event_Images
 
 			if (substr($img, strrpos($img, ".")) == ".jpg") {
 				$timestr = substr($img, strpos($img, '_') + 1, strrpos($img, '.') - strpos($img, '_') - 1);
-				$date = DateTime::createFromFormat('Y-m-d_H-i-s', $timestr);
+				$date = \DateTime::createFromFormat('Y-m-d_H-i-s', $timestr);
 				if (!$date) {
 					$exif = exif_read_data($dir . '/' . $img);
-					$date = new Datetime($exif["DateTimeOriginal"]);
+					$date = new \Datetime($exif["DateTimeOriginal"]);
 				}
 				$dimensions = getimagesize($dir . '/' . $img);
 
@@ -258,11 +258,11 @@ class Event_Images
 				$width = $dimensions[0];
 				$height = $dimensions[1];
 			} else {
-				$ffprobe = FFMpeg\FFProbe::create();
+				$ffprobe = \FFMpeg\FFProbe::create();
 				$timestr = substr($img, strpos($img, '_') + 1, strrpos($img, '.') - strpos($img, '_') - 1);
-				$date = DateTime::createFromFormat('Y-m-d_H-i-s', $timestr);
+				$date = \DateTime::createFromFormat('Y-m-d_H-i-s', $timestr);
 				if (!$date) {
-					$date = new Datetime($ffprobe
+					$date = new \Datetime($ffprobe
 						->format($dir . '/' . $img)
 						->get("tags")["title"]);
 				}
@@ -290,7 +290,7 @@ class Event_Images
 	{
 		//Check Filename format
 		if (!preg_match('/PB_[a-z0-9\-]*_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}_.*\.(jpg|mp4)/', $name)) {
-			throw new InvalidArgumentException("Invalid Filename! Must be PB_id_Y-m-d_H-i-s_random.ext");
+			throw new \InvalidArgumentException("Invalid Filename! Must be PB_id_Y-m-d_H-i-s_random.ext");
 		} else return true;
 	}
 
@@ -321,7 +321,7 @@ class Event_Images
 			$seperated = explode("_", $name, 5);
 			$timestr = $seperated[2] . "T" . $seperated[3];
 			$random_key = substr($seperated[4], 0, strrpos($seperated[4], '.'));
-			$date = DateTime::createFromFormat('Y-m-d\TH-i-s', $timestr);
+			$date = \DateTime::createFromFormat('Y-m-d\TH-i-s', $timestr);
 
 			if ($extension == ".jpg") {
 				$dimensions = getimagesize($dir . '/' . $name);
@@ -334,7 +334,7 @@ class Event_Images
 					$height = $dimensions[0];
 				}
 			} else if ($extension == ".mp4") {
-				$ffprobe = FFMpeg\FFProbe::create();
+				$ffprobe = \FFMpeg\FFProbe::create();
 				$strinfo = $ffprobe->streams($dir . '/' . $name)->videos()->first();
 				$width = $strinfo->get("width");
 				$height = $strinfo->get("height");
@@ -344,11 +344,11 @@ class Event_Images
 			$query = $wpdb->prepare($query, $name, $this->directory, $date->format("U"), $width, $height,  $random_key);
 			$wpdb->query($query);
 			if ($wpdb->last_error !== '') {
-				throw new InvalidArgumentException("Database Error! May already exist! " . $wpdb->last_error);
+				throw new \InvalidArgumentException("Database Error! May already exist! " . $wpdb->last_error);
 			}
 			return $name; // return possibly altered filename 
 		} else {
-			throw new InvalidArgumentException("Invalid Dir! " . $this->directory);
+			throw new \InvalidArgumentException("Invalid Dir! " . $this->directory);
 		}
 	}
 
@@ -357,7 +357,7 @@ class Event_Images
 	{
 		global $wpdb;
 
-		$date = new DateTime('@' . $timestamp);
+		$date = new \DateTime('@' . $timestamp);
 
 		if ($this->dirExists()) {
 			$name = substr($name, 0, strrpos($name, '.'));
