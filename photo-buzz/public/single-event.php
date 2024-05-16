@@ -118,16 +118,28 @@ if (isset($_GET['json'])) {
         $event_images = array_reverse($images->getImages());
         while (!empty($event_images)) {
           $img = end($event_images);
-          echo "<div>";
-          echo $img["date"]->format("H:i:s");
-          echo " (letztes Foto) Link: <a href='/p/";
+          if(str_contains($img["filename"],"PB_ai_"))
+          {
+            array_pop($event_images);
+            continue;
+          }
+          echo "\n<div class='photoset-preview'><a href='/p/";
           $code = $img["code"];
           echo $code;
-          echo "'>LINK</a>";
-          while (end($event_images)["code"] == $code) {
+          echo "'>";
+          echo "<h4><b>";
+          echo $img["date"]->format("H:i:s");
+          echo "</b></h4></a> (Zeit des letzten Fotos)<div class='thumb-line'>";
+          $imgs = $images->getImageByCode($code);
+          foreach($imgs as $img){
+            ?>
+            <div><img src="<?=$img["thumbnail_url"]?>"></div>
+            <?php
+          }
+          while (!empty($event_images) && end($event_images)["code"] == $code) {
             array_pop($event_images);
           }
-          echo "</div>";
+          echo "</div></div>";
         }
       } else {
 

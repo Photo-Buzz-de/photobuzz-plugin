@@ -190,6 +190,7 @@ $imgs = $images->getImageByCode(get_query_var("image-code"));
                 if ($terms && (in_array("photoset", $terms))) {
 
                     if (can_delete_image(get_the_ID())) {
+                        echo "<a class='button' href='".get_permalink(get_the_ID())."'>Zurück</a>";
                         echo "<h2>Lade hier das AI Bild hoch</h2>";
                         $event = get_post(get_the_ID());
 
@@ -239,7 +240,12 @@ $imgs = $images->getImageByCode(get_query_var("image-code"));
                                     'msrc' => $img['thumbnail_url'],
                                     "date" => $img['date']->getTimestamp()
                                 );
-                                echo '<div class="pswp-thumb masonry-grid-item masonry-brick cell" style="opacity: 0"><a class="pswp-open" id="gallery-link-' . $jsctr . '" data-pswp-item-id="' . $jsctr . '"><img src="' . $img['image_url'] . '" style="position:relative"></a></div>';
+                                echo '<div class="pswp-thumb masonry-grid-item masonry-brick cell" style="opacity: 0;';
+                                if(str_contains($img["filename"],"PB_ai_"))
+                                {
+                                    echo "width:100%";
+                                }
+                                echo '"><a class="pswp-open" id="gallery-link-' . $jsctr . '" data-pswp-item-id="' . $jsctr . '"><img src="' . $img['image_url'] . '" style="position:relative"></a></div>';
                                 $jsctr++;
                             }
                             ?>
