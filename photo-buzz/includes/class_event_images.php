@@ -1,4 +1,5 @@
 <?php
+
 namespace PhotoBuzz;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -298,7 +299,7 @@ class Event_Images
 	 * V2 Insert function
 	 * Format has to be PB_id_Y-m-d_H-i-s_random.ext 
 	 */
-	public function insertImage2($tmpurl, $name, $scan = false)
+	public function insertImage2($tmpurl, $name, $scan = false, $copy_file = false)
 	{
 		global $wpdb;
 
@@ -312,7 +313,11 @@ class Event_Images
 			}
 			$dir = get_home_path() . self::img_dir . "/" . $this->directory;
 
-			move_uploaded_file($tmpurl, $dir . '/' . $name);
+			if (!$copy_file) {
+				move_uploaded_file($tmpurl, $dir . '/' . $name);
+			} else {
+				copy($tmpurl, $dir . '/' . $name);
+			}
 
 			$this->make_thumbnail($name);
 
