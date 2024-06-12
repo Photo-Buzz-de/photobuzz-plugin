@@ -22,7 +22,7 @@ class Raffle
             array(
                 "name" => $name,
                 "email" => $email,
-                "time" => (new Datetime("now", new DateTimeZone("Europe/Berlin")))->format("Y-m-d H:i:s"),
+                "time" => (new \Datetime("now", new \DateTimeZone("Europe/Berlin")))->format("Y-m-d H:i:s"),
                 "raffle_id" => $this->raffle_id,
                 "blog_id" => get_current_blog_id(),
                 "image_code" => $image_code,

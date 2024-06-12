@@ -175,7 +175,7 @@ class Event_Images
 		global $wpdb;
 
 		if (!function_exists('get_home_path')) {
-			require_once(dirname(__FILE__) . '/../../../../wp-admin/includes/file.php');
+			require_once(ABSPATH. '/wp-admin/includes/file.php');
 		}
 
 		$query = $wpdb->prepare('SELECT * FROM wp_photobuzz_event_images WHERE random_key="%s" ORDER BY date ASC LIMIT 2',  $code);

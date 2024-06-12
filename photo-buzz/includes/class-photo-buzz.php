@@ -335,7 +335,11 @@ class Photo_Buzz
 			if (in_array("single-event.php", $templates)) {
 				return realpath(plugin_dir_path(__FILE__) . "/../public/single-event.php");
 			}
+			else if (in_array("single-raffle.php", $templates)) {
+				return realpath(plugin_dir_path(__FILE__) . "/../public/single-raffle.php");
+			}
 		}, 10, 4);
+
 
 		$this->loader->add_action('wp_ajax_delete_image', $plugin_public, function () {
 			error_log("DELETE");
